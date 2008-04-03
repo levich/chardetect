@@ -1,0 +1,9 @@
+#summary Introduction to CharDet in C#
+
+= Introduction =
+
+This is a C# port of the excellent character set detector developed by Mozilla.
+Character set detection is a problem that I continually run into, but yet there are few solutions for C#.  This is one attempt to create a native C#/.NET implementation.
+
+
+= Details =
