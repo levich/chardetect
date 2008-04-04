@@ -1,0 +1,8 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+http://www.mozilla.org/projects/intl/chardet.html
+
+
+= Details =
