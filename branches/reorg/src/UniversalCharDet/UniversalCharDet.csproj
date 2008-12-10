@@ -74,7 +74,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AutomatedDebug|AnyCPU' ">
-    <OutputPath>..\..\build\Debug\Core\</OutputPath>
+    <OutputPath>..\..\build\Debug\UniversalCharDet\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
