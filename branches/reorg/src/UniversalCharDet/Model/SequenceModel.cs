@@ -41,80 +41,31 @@
 #endregion
 
 using System;
+using System.Text;
 
-namespace Mozilla.CharDet
+namespace CharDetSharp.UniversalCharDet.Model
 {
-    public enum nsIdxSft
+    public partial class SequenceModel
     {
-        eIdxSft4bits = 3,
-        eIdxSft8bits = 2,
-        eIdxSft16bits = 1
-    };
-
-    public enum nsSftMsk
-    {
-        eSftMsk4bits = 7,
-        eSftMsk8bits = 3,
-        eSftMsk16bits = 1
-    };
-
-    public enum nsBitSft
-    {
-        eBitSft4bits = 2,
-        eBitSft8bits = 3,
-        eBitSft16bits = 4
-    };
-
-    public enum nsUnitMsk
-    {
-        eUnitMsk4bits = 0x000F,
-        eUnitMsk8bits = 0x00FF,
-        eUnitMsk16bits = 0xFFFF
-    };
-
-    public class PkgInt
-    {
-        public nsIdxSft idxsft;
-        public nsSftMsk sftmsk;
-        public nsBitSft bitsft;
-        public nsUnitMsk unitmsk;
-        public int[] data;
-
-        public PkgInt(nsIdxSft idxsft,
-         nsSftMsk sftmsk,
-         nsBitSft bitsft,
-         nsUnitMsk unitmsk,
-         int[] data)
+        protected SequenceModel(byte[] charToOrderMap, byte[] precedenceMatrix, float typicalPositiveRatio, bool keepEnglishLetter, string charSetName)
+            : this(charToOrderMap, precedenceMatrix, typicalPositiveRatio, keepEnglishLetter, Encoding.GetEncoding(charSetName))
         {
-            this.idxsft = idxsft;
-            this.sftmsk = sftmsk;
-            this.bitsft = bitsft;
-            this.unitmsk = unitmsk;
-            this.data = data;
-        }
-        
-        public static int PCK16BITS(int a, int b)
-        {
-            return ((int)(((b) << 16) | (a)));
         }
 
-        public static int PCK8BITS(int a, int b, int c, int d)
+
+        protected SequenceModel(byte[] charToOrderMap, byte[] precedenceMatrix, float typicalPositiveRatio, bool keepEnglishLetter, Encoding charSet)
         {
-            return PCK16BITS((int)((b << 8) | a),
-                            (int)((d << 8) | c));
+            this.charToOrderMap = charToOrderMap;
+            this.precedenceMatrix = precedenceMatrix;
+            this.mTypicalPositiveRatio = typicalPositiveRatio;
+            this.keepEnglishLetter = keepEnglishLetter;
+            this.charSet = charSet;
         }
 
-        public static int PCK4BITS(int a, int b, int c, int d, int e, int f, int g, int h)
-        {
-            return PCK8BITS(((int)(((b) << 4) | (a))),
-                            ((int)(((d) << 4) | (c))),
-                            ((int)(((f) << 4) | (e))),
-                            ((int)(((h) << 4) | (g))));
-        }
-
-        public static int GETFROMPCK(int i, PkgInt c)
-        {
-            return ((c.data[(i) >> (int)c.idxsft]) >> ((i & (int)c.sftmsk) << (int)c.bitsft)) & (int)c.unitmsk;
-        }
+        public byte[] charToOrderMap;        // [256] table use to find a char's order
+        public byte[] precedenceMatrix;      // [SAMPLE_SIZE][SAMPLE_SIZE]; table to find a 2-char sequence's frequency
+        public float mTypicalPositiveRatio;  // = freqSeqs / totalSeqs 
+        public bool keepEnglishLetter;       // says if this script contains English characters (not implemented)
+        public Encoding charSet;
     }
 }

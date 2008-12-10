@@ -40,12 +40,12 @@
 // the terms of any one of the MPL, the GPL or the LGPL.
 #endregion
 
-
 using System;
+using System.Text;
 
-namespace Mozilla.CharDet
+namespace CharDetSharp.UniversalCharDet.Model
 {
-    internal partial class SequenceModel
+    public partial class SequenceModel
     {
         //*****************************************************************
         // 255: Control characters that usually does not exist in any text
