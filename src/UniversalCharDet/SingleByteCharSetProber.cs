@@ -42,61 +42,108 @@
 #endregion
 
 using System;
+using System.Text;
 
-namespace Mozilla.CharDet
+using CharDetSharp.UniversalCharDet.Model;
+
+namespace CharDetSharp.UniversalCharDet
 {
-    class SingleByteCharSetProber : AbstractCSProber
+    public abstract class SingleByteCharSetProber : ICharSetProber
     {
         const int SAMPLE_SIZE = 64;
         const int SB_ENOUGH_REL_THRESHOLD = 1024;
         const float POSITIVE_SHORTCUT_THRESHOLD = 0.95f;
         const float NEGATIVE_SHORTCUT_THRESHOLD = 0.05f;
+        const float SURE_YES = 0.99f;
+        const float SURE_NO = 0.01f;
         const int SYMBOL_CAT_ORDER = 250;
         const int NUMBER_OF_SEQ_CAT = 4;
         const int POSITIVE_CAT = (NUMBER_OF_SEQ_CAT - 1);
         const int NEGATIVE_CAT = 0;
 
-        public SingleByteCharSetProber(SequenceModel model) : this(model, false, null) { }
-        public SingleByteCharSetProber(SequenceModel model, bool reversed, AbstractCSProber nameProber)
-        {
-            mModel = model;
-            mReversed = reversed;
-            mNameProber = nameProber;
+        protected ProbingState mState;
+        protected SequenceModel mModel;
+        protected bool mReversed; // true if we need to reverse every pair in the model lookup
+        protected bool isActive = true;
+        protected byte mLastOrder; //char order of last character
+        protected int mTotalSeqs;
+        protected int[] mSeqCounters = new int[NUMBER_OF_SEQ_CAT];
+        protected int mTotalChar;
+        protected int mFreqChar; //characters that fall in our sampling range
 
-            Reset();
+        protected SingleByteCharSetProber(SequenceModel mModel)
+        {
+            this.mModel = mModel;
         }
 
-        ProbingState mState;
-        SequenceModel mModel;
-        bool mReversed; // PR_TRUE if we need to reverse every pair in the model lookup
-
-        //char order of last character
-        byte mLastOrder;
-
-        int mTotalSeqs;
-        int[] mSeqCounters = new int[NUMBER_OF_SEQ_CAT];
-
-        int mTotalChar;
-        //characters that fall in our sampling range
-        int mFreqChar;
-
-        // Optional auxiliary prober for name decision. created and destroyed by the GroupProber
-        AbstractCSProber mNameProber;
-
-        bool active;
-
-
-        public override ProbingState HandleData(byte[] aBuf)
+        public string CharSetName { get { return mModel.charSet.WebName; } }
+        public Encoding CharSet { get { return mModel.charSet; } }
+        public ProbingState State { get { return mState; } }
+        
+        public float Confidence
         {
-            return HandleData(aBuf, aBuf.Length);
+            get
+            {
+#if NEGATIVE_APPROACH
+                if (mTotalSeqs > 0)
+                    if (mTotalSeqs > mSeqCounters[NEGATIVE_CAT] * 10)
+                        return ((float)(mTotalSeqs - mSeqCounters[NEGATIVE_CAT] * 10)) / mTotalSeqs * mFreqChar / mTotalChar;
+                return SURE_NO;
+#else  //POSITIVE_APPROACH
+                float r;
+
+                if (mTotalSeqs > 0)
+                {
+                    r = ((float)mSeqCounters[POSITIVE_CAT]) / mTotalSeqs / mModel.mTypicalPositiveRatio;
+                    r = r * mFreqChar / mTotalChar;
+                    if (r >= 1.00f)
+                        r = SURE_YES;
+                    return r;
+                }
+                return SURE_NO;
+#endif
+            }
         }
-        public override ProbingState HandleData(byte[] aBuf, int length)
+
+        public bool IsActive
         {
+            get
+            {
+                return isActive;
+            }
+            set
+            {
+                // not Active -> active
+                if (!isActive && value)
+                    Reset();
+                else
+                    isActive = value;
+            }
+        }
+
+        public ProbingState HandleData(byte[] buffer)
+        {
+            if (buffer == null)
+                throw new ArgumentNullException("The buffer cannot be null");
+
+            return HandleData(buffer, 0, buffer.Length);
+        }
+
+        public ProbingState HandleData(byte[] buffer, int start, int length)
+        {
+            if (buffer == null)
+                throw new ArgumentNullException("The buffer cannot be null");
+
+            // if we are not active, we needn't do any work.
+            if (!isActive) return mState;
+            // otherwise, we continue, even if we've made up our mind.
+
             byte order;
 
-            for (int i = 0; i < aBuf.Length && i < length; i++)
+            int end = start + length;
+            for (int i = start; i < buffer.Length && i < end; ++i)
             {
-                order = mModel.charToOrderMap[aBuf[i]];
+                order = mModel.charToOrderMap[buffer[i]];
 
                 if (order < SYMBOL_CAT_ORDER)
                     mTotalChar++;
@@ -116,86 +163,31 @@ namespace Mozilla.CharDet
                 mLastOrder = order;
             }
 
-
             if (mState == ProbingState.Detecting)
                 if (mTotalSeqs > SB_ENOUGH_REL_THRESHOLD)
                 {
-                    float cf = GetConfidence();
+                    float cf = Confidence;
                     if (cf > POSITIVE_SHORTCUT_THRESHOLD)
                         mState = ProbingState.FoundIt;
                     else if (cf < NEGATIVE_SHORTCUT_THRESHOLD)
                         mState = ProbingState.NotMe;
+                    //else
+                    //  stay Detecting
                 }
 
             return mState;
         }
 
-        public override void Reset()
+        public void Reset()
         {
-            mState = ProbingState.Detecting;
-            mLastOrder = 255;
+            this.mState = ProbingState.Detecting;
+            this.mLastOrder = 255;
             for (int i = 0; i < NUMBER_OF_SEQ_CAT; i++)
                 mSeqCounters[i] = 0;
-            mTotalSeqs = 0;
-            mTotalChar = 0;
-            mFreqChar = 0;
-            active = true;
+            this.mTotalSeqs = 0;
+            this.mTotalChar = 0;
+            this.mFreqChar = 0;
+            this.isActive = true;
         }
-        public override void SetOpion() { }
-
-        public override ProbingState State { get { return mState; } }
-
-        public override float GetConfidence()
-        {
-#if NEGATIVE_APPROACH
-            if (mTotalSeqs > 0)
-                if (mTotalSeqs > mSeqCounters[NEGATIVE_CAT] * 10)
-                    return ((float)(mTotalSeqs - mSeqCounters[NEGATIVE_CAT] * 10)) / mTotalSeqs * mFreqChar / mTotalChar;
-            return 0.01f;
-#else  //POSITIVE_APPROACH
-            float r;
-
-            if (mTotalSeqs > 0)
-            {
-                r = ((float)1.0) * mSeqCounters[POSITIVE_CAT] / mTotalSeqs / mModel.mTypicalPositiveRatio;
-                r = r * mFreqChar / mTotalChar;
-                if (r >= 1.00f)
-                    r = 0.99f;
-                return r;
-            }
-            return 0.01f;
-#endif
-        }
-
-        public override string CharSetName
-        {
-            get
-            {
-                if (mNameProber == null)
-                    return mModel.charsetName;
-                return mNameProber.CharSetName;
-            }
-        }
-
-        public override bool IsActive
-        {
-            get { return active; }
-            set { active = value; }
-        }
-
-  // This feature is not implemented yet. any current language model
-  // contain this parameter as PR_FALSE. No one is looking at this
-  // parameter or calling this method.
-  // Moreover, the nsSBCSGroupProber which calls the HandleData of this
-  // prober has a hard-coded call to FilterWithoutEnglishLetters which gets rid
-  // of the English letters.
-        public bool KeepEnglishLetters() {return mModel.keepEnglishLetter;} // (not implemented)
-
-#if DEBUG
-        internal void DumpStatus()
-        {
-            Console.Out.WriteLine("  SBCS: {0:0.000} [{1}]", GetConfidence(), CharSetName);
-        }
-#endif
     }
 }
