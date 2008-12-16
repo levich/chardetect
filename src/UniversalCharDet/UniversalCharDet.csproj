@@ -102,7 +102,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\SequenceModel.Bulgarian.cs" />
+    <Compile Include="SingleByteCharSetProber.Greek.cs" />
     <Compile Include="ICharSetProber.cs" />
+    <Compile Include="Model\SequenceModel.Greek.cs" />
     <Compile Include="SBCSGroupProber.cs" />
     <Compile Include="SingleByteCharSetProber.Cyrillic.cs" />
     <Compile Include="Model\SequenceModel.Thai.cs" />

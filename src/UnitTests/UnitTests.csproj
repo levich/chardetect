@@ -123,8 +123,12 @@
     <Compile Include="CyrillicProbersTestFixture.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GreekProbersTestFixture.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Samples\el.utf-8.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Samples\ru.utf-8.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
