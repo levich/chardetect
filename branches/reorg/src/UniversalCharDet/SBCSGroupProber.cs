@@ -14,7 +14,7 @@ namespace CharDetSharp.UniversalCharDet
 
         public SBCSGroupProber()
         {
-            probers.Add(bestGuess = new Koi8RCharSetProber());
+            probers.Add(new Koi8RCharSetProber());
             probers.Add(new Koi8RCharSetProber());
             probers.Add(new Win1251CharSetProber());
             probers.Add(new Latin5CharSetProber());
@@ -22,6 +22,10 @@ namespace CharDetSharp.UniversalCharDet
             probers.Add(new Ibm855CharSetProber());
             probers.Add(new Ibm866CharSetProber());
 
+            probers.Add(new Latin7CharSetProber());
+            probers.Add(new Win1253CharSetProber());
+
+            bestGuess = probers[0];
             activeNum = probers.Count;
             isActive = true;
         }

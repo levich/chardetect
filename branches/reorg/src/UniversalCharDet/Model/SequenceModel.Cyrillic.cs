@@ -54,7 +54,7 @@ namespace CharDetSharp.UniversalCharDet.Model
         // 252: 0 - 9
         //*****************************************************************
 
-        static readonly byte[] KOI8R_CharToOrderMap = new byte[] {
+        static readonly byte[] koi8R_CharToOrderMap = new byte[] {
             255,255,255,255,255,255,255,255,255,255,254,255,255,254,255,255,  //00
             255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,  //10
             253,253,253,253,253,253,253,253,253,253,253,253,253,253,253,253,  //20
@@ -305,7 +305,7 @@ namespace CharDetSharp.UniversalCharDet.Model
         };
 
         public static readonly SequenceModel Koi8rModel = new SequenceModel(
-            KOI8R_CharToOrderMap,
+            koi8R_CharToOrderMap,
             RussianLangModel,
             (float)0.976601,
             false,
