@@ -9,44 +9,49 @@ using CharDetSharp.UniversalCharDet;
 namespace CharDetSharp.UnitTests
 {
     [TestFixture]
-    public class CyrillicProbersTestFixture
+    public class CyrillicDetectionTestFixture
     {
         [Test]
-        public void TestKoi8RCharSetProber()
+        public void TestKoi8RDetection()
         {
             RunCyrillicTest(Encoding.GetEncoding("koi8-r"));
         }
 
         [Test]
-        public void TestWin1251CharSetProber()
+        public void TestWin1251Detection()
         {
             RunCyrillicTest(Encoding.GetEncoding("windows-1251"));
         }
 
         [Test]
-        public void TestLatin5CharSetProber()
+        public void TestLatin5Detection()
         {
             RunCyrillicTest(Encoding.GetEncoding("iso-8859-5"));
         }
 
         [Test]
-        public void TestMacCyrillicCharSetProber()
+        public void TestMacCyrillicDetection()
         {
             RunCyrillicTest(Encoding.GetEncoding("x-mac-cyrillic"));
         }
 
         [Test]
-        public void TestIbm855CharSetProber()
+        public void TestIbm855Detection()
         {
             RunCyrillicTest(Encoding.GetEncoding("IBM855"));
         }
 
         [Test]
-        public void TestIbm866CharSetProber()
+        public void TestIbm866Detection()
         {
             RunCyrillicTest(Encoding.GetEncoding("cp866"));
         }
 
+        [Test]
+        public void TestUtf8Detection()
+        {
+            RunCyrillicTest(Encoding.UTF8);
+        }
 
         internal void RunCyrillicTest(Encoding enc)
         {

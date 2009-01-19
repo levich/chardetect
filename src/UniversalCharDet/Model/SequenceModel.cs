@@ -57,15 +57,21 @@ namespace CharDetSharp.UniversalCharDet.Model
         {
             this.charToOrderMap = charToOrderMap;
             this.precedenceMatrix = precedenceMatrix;
-            this.mTypicalPositiveRatio = typicalPositiveRatio;
+            this.typicalPositiveRatio = typicalPositiveRatio;
             this.keepEnglishLetter = keepEnglishLetter;
             this.charSet = charSet;
         }
 
-        public byte[] charToOrderMap;        // [256] table use to find a char's order
-        public byte[] precedenceMatrix;      // [SAMPLE_SIZE][SAMPLE_SIZE]; table to find a 2-char sequence's frequency
-        public float mTypicalPositiveRatio;  // = freqSeqs / totalSeqs 
-        public bool keepEnglishLetter;       // says if this script contains English characters (not implemented)
-        public Encoding charSet;
+        private byte[] charToOrderMap;        // [256] table use to find a char's order
+        private byte[] precedenceMatrix;      // [SAMPLE_SIZE][SAMPLE_SIZE]; table to find a 2-char sequence's frequency
+        private float typicalPositiveRatio;  // = freqSeqs / totalSeqs 
+        private bool keepEnglishLetter;       // says if this script contains English characters (not implemented)
+        private Encoding charSet;
+
+        public byte[] CharToOrderMap { get { return this.charToOrderMap;}}
+        public byte[] PrecedenceMatrix  { get { return this.precedenceMatrix;}}
+        public float TypicalPositiveRatio { get { return this.typicalPositiveRatio;}} 
+        public bool KeepEnglishLetter { get { return this.keepEnglishLetter;}}     
+        public Encoding CharSet { get { return this.charSet;}}
     }
 }
