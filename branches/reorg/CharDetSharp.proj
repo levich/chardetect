@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+         ToolsVersion="3.5">
+
+  <PropertyGroup>
+    <FxCopPath>C:\Program Files\Microsoft FxCop</FxCopPath>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildExtensionsPath)\ExtensionPack\MSBuild.ExtensionPack.tasks"/>
+
+  <ItemGroup>
+    <Files Include="C:\svn\chardetsharp\reorg\src\UniversalCharDet\bin\Debug\CharDetSharp.UniversalCharDet.dll"/>
+  </ItemGroup>
+
+
+  <Target Name="DoQualityCheck">
+    <!-- Call the task using a collection of files and bespoke rules. We can access the exact failure message using OutputText -->
+    <MSBuild.ExtensionPack.CodeQuality.FxCop TaskAction="Analyse" Files="@(Files)" OutputFile="c:\fxcoplog3.txt" LogToConsole="true" FxCopPath="$(FxCopPath)\FxCopCmd.exe">
+      <Output TaskParameter="AnalysisFailed" PropertyName="Result"/>
+      <Output TaskParameter="OutputText" PropertyName="Text"/>      
+    </MSBuild.ExtensionPack.CodeQuality.FxCop>
+  </Target>
+
+
+  <Target Name="DoUnitTests" DependsOnTargets="">
+    
+  </Target>
+</Project>
