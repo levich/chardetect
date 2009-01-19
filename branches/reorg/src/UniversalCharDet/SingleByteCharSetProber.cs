@@ -61,25 +61,25 @@ namespace CharDetSharp.UniversalCharDet
         const int POSITIVE_CAT = (NUMBER_OF_SEQ_CAT - 1);
         const int NEGATIVE_CAT = 0;
 
-        protected ProbingState mState;
-        protected SequenceModel mModel;
-        protected bool mReversed; // true if we need to reverse every pair in the model lookup
-        protected bool isActive = true;
-        protected byte mLastOrder; //char order of last character
-        protected int mTotalSeqs;
-        protected int[] mSeqCounters = new int[NUMBER_OF_SEQ_CAT];
-        protected int mTotalChar;
-        protected int mFreqChar; //characters that fall in our sampling range
+        protected ProbingState currentState;
+        protected SequenceModel model;
+        protected bool reversed; // true if we need to reverse every pair in the model lookup
+        protected bool active = true;
+        protected byte lastOrder; //char order of last character
+        protected int totalSeqs;
+        protected int[] seqCounters = new int[NUMBER_OF_SEQ_CAT];
+        protected int totalChar;
+        protected int freqChar; //characters that fall in our sampling range
 
         protected SingleByteCharSetProber(SequenceModel mModel)
         {
-            this.mModel = mModel;
+            this.model = mModel;
         }
 
-        public string CharSetName { get { return mModel.charSet.WebName; } }
-        public Encoding CharSet { get { return mModel.charSet; } }
-        public ProbingState State { get { return mState; } }
-        
+        public string CharSetName { get { return model.CharSet.WebName; } }
+        public Encoding CharSet { get { return model.CharSet; } }
+        public ProbingState State { get { return currentState; } }
+
         public float Confidence
         {
             get
@@ -92,10 +92,10 @@ namespace CharDetSharp.UniversalCharDet
 #else  //POSITIVE_APPROACH
                 float r;
 
-                if (mTotalSeqs > 0)
+                if (totalSeqs > 0)
                 {
-                    r = ((float)mSeqCounters[POSITIVE_CAT]) / mTotalSeqs / mModel.mTypicalPositiveRatio;
-                    r = r * mFreqChar / mTotalChar;
+                    r = ((float)seqCounters[POSITIVE_CAT]) / totalSeqs / model.TypicalPositiveRatio;
+                    r = r * freqChar / totalChar;
                     if (r >= 1.00f)
                         r = SURE_YES;
                     return r;
@@ -109,22 +109,22 @@ namespace CharDetSharp.UniversalCharDet
         {
             get
             {
-                return isActive;
+                return active;
             }
             set
             {
                 // not Active -> active
-                if (!isActive && value)
+                if (!active && value)
                     Reset();
                 else
-                    isActive = value;
+                    active = value;
             }
         }
 
         public ProbingState HandleData(byte[] buffer)
         {
             if (buffer == null)
-                throw new ArgumentNullException("The buffer cannot be null");
+                throw new ArgumentNullException("buffer", Properties.Resources.NullBufferExceptionMessage);
 
             return HandleData(buffer, 0, buffer.Length);
         }
@@ -132,10 +132,13 @@ namespace CharDetSharp.UniversalCharDet
         public ProbingState HandleData(byte[] buffer, int start, int length)
         {
             if (buffer == null)
-                throw new ArgumentNullException("The buffer cannot be null");
+                throw new ArgumentNullException("buffer", Properties.Resources.NullBufferExceptionMessage);
+            if (start < 0)
+                throw new ArgumentException(Properties.Resources.NegativeStartIndexExceptionMessage, "start");
 
             // if we are not active, we needn't do any work.
-            if (!isActive) return mState;
+            if (!active) return currentState;
+
             // otherwise, we continue, even if we've made up our mind.
 
             byte order;
@@ -143,51 +146,52 @@ namespace CharDetSharp.UniversalCharDet
             int end = start + length;
             for (int i = start; i < buffer.Length && i < end; ++i)
             {
-                order = mModel.charToOrderMap[buffer[i]];
+                order = model.CharToOrderMap[buffer[i]];
 
                 if (order < SYMBOL_CAT_ORDER)
-                    mTotalChar++;
+                    totalChar++;
+
                 if (order < SAMPLE_SIZE)
                 {
-                    mFreqChar++;
+                    freqChar++;
 
-                    if (mLastOrder < SAMPLE_SIZE)
+                    if (lastOrder < SAMPLE_SIZE)
                     {
-                        mTotalSeqs++;
-                        if (!mReversed)
-                            ++(mSeqCounters[mModel.precedenceMatrix[mLastOrder * SAMPLE_SIZE + order]]);
+                        totalSeqs++;
+                        if (!reversed)
+                            ++(seqCounters[model.PrecedenceMatrix[lastOrder * SAMPLE_SIZE + order]]);
                         else // reverse the order of the letters in the lookup
-                            ++(mSeqCounters[mModel.precedenceMatrix[order * SAMPLE_SIZE + mLastOrder]]);
+                            ++(seqCounters[model.PrecedenceMatrix[order * SAMPLE_SIZE + lastOrder]]);
                     }
                 }
-                mLastOrder = order;
+                lastOrder = order;
             }
 
-            if (mState == ProbingState.Detecting)
-                if (mTotalSeqs > SB_ENOUGH_REL_THRESHOLD)
+            if (currentState == ProbingState.Detecting)
+                if (totalSeqs > SB_ENOUGH_REL_THRESHOLD)
                 {
                     float cf = Confidence;
                     if (cf > POSITIVE_SHORTCUT_THRESHOLD)
-                        mState = ProbingState.FoundIt;
+                        currentState = ProbingState.FoundIt;
                     else if (cf < NEGATIVE_SHORTCUT_THRESHOLD)
-                        mState = ProbingState.NotMe;
+                        currentState = ProbingState.NotMe;
                     //else
                     //  stay Detecting
                 }
 
-            return mState;
+            return currentState;
         }
 
         public void Reset()
         {
-            this.mState = ProbingState.Detecting;
-            this.mLastOrder = 255;
+            this.currentState = ProbingState.Detecting;
+            this.lastOrder = 255;
             for (int i = 0; i < NUMBER_OF_SEQ_CAT; i++)
-                mSeqCounters[i] = 0;
-            this.mTotalSeqs = 0;
-            this.mTotalChar = 0;
-            this.mFreqChar = 0;
-            this.isActive = true;
+                seqCounters[i] = 0;
+            this.totalSeqs = 0;
+            this.totalChar = 0;
+            this.freqChar = 0;
+            this.active = true;
         }
     }
 }

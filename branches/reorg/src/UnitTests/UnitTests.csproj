@@ -117,15 +117,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CyrillicDetectionTestFixture.cs" />
+    <Compile Include="GreekDetectionTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CyrillicProbersTestFixture.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GreekProbersTestFixture.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Samples\bg.utf-8.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Samples\el.utf-8.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

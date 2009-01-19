@@ -22,10 +22,6 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>
     </StartupObject>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -102,18 +98,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\SequenceModel.Bulgarian.cs" />
-    <Compile Include="SingleByteCharSetProber.Greek.cs" />
-    <Compile Include="ICharSetProber.cs" />
-    <Compile Include="Model\SequenceModel.Greek.cs" />
-    <Compile Include="SBCSGroupProber.cs" />
-    <Compile Include="SingleByteCharSetProber.Cyrillic.cs" />
-    <Compile Include="Model\SequenceModel.Thai.cs" />
-    <Compile Include="Model\SequenceModel.Cyrillic.cs" />
-    <Compile Include="ProbingState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\SequenceModel.cs" />
+    <Compile Include="Model\SequenceModel.Bulgarian.cs" />
+    <Compile Include="Model\SequenceModel.Cyrillic.cs" />
+    <Compile Include="Model\SequenceModel.Greek.cs" />
+    <Compile Include="Model\SequenceModel.Hebrew.cs" />
+    <Compile Include="Model\SequenceModel.Thai.cs" />
+    <Compile Include="HebrewCharSetProber.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SingleByteCharSetProber.Greek.cs" />
+    <Compile Include="ICharSetProber.cs" />
+    <Compile Include="SBCSGroupProber.cs" />
+    <Compile Include="SingleByteCharSetProber.Cyrillic.cs" />
+    <Compile Include="ProbingState.cs" />
     <Compile Include="SingleByteCharSetProber.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

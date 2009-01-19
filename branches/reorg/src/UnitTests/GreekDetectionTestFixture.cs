@@ -9,30 +9,36 @@ using CharDetSharp.UniversalCharDet;
 namespace CharDetSharp.UnitTests
 {
     [TestFixture]
-    public class GreekProbersTestFixture
+    public class GreekDetectionTestFixture
     {
         [Test]
-        public void TestKoi8RCharSetProber()
+        public void TestLatin7Detection()
         {
             RunGreekTest(Encoding.GetEncoding("ISO-8859-7"));
         }
 
         [Test]
-        public void Win1253CharSetProber()
+        public void Win1253Detection()
         {
             RunGreekTest(Encoding.GetEncoding("windows-1253"));
+        }
+
+        [Test]
+        public void TestUtf8Detection()
+        {
+            RunGreekTest(Encoding.UTF8);
         }
 
         internal void RunGreekTest(Encoding enc)
         {
             Console.Out.WriteLine("Testing [{0}]", enc.WebName);
 
-            ICharSetProber p_lat = new Latin7CharSetProber();
+            ICharSetProber p_lat7 = new Latin7CharSetProber();
             ICharSetProber p_1253 = new Win1253CharSetProber();
 
             ICharSetProber p_grp = new SBCSGroupProber();
 
-            float c_lat = p_lat.Confidence;
+            float c_lat7 = p_lat7.Confidence;
             float c_1253 = p_1253.Confidence;
 
             float c_grp = p_grp.Confidence;
@@ -42,19 +48,18 @@ namespace CharDetSharp.UnitTests
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    Console.Out.WriteLine(line);
                     byte[] bytes = enc.GetBytes(line+"\n");
-                    p_lat.HandleData(bytes);
+                    p_lat7.HandleData(bytes);
                     p_1253.HandleData(bytes);
 
                     p_grp.HandleData(bytes);
 
-                    c_lat = p_lat.Confidence;
+                    c_lat7 = p_lat7.Confidence;
                     c_1253 = p_1253.Confidence;
 
                     c_grp = p_grp.Confidence;
 
-                    Console.Out.WriteLine("{0}\t{1}\t[{2}]", c_lat, c_1253, c_grp);
+                    Console.Out.WriteLine("{0}\t{1}\t[{2}]", c_lat7, c_1253, c_grp);
 
                     continue;
                 }
