@@ -2,28 +2,38 @@ using System;
 using System.IO;
 using System.Text;
 
+#if NUNIT
 using NUnit.Framework;
+using TestClassAttribute = NUnit.Framework.TestFixtureAttribute;
+using TestMethodAttribute = NUnit.Framework.TestAttribute;
+#else
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 using CharDetSharp.UniversalCharDet;
 
 namespace CharDetSharp.UnitTests
 {
-    [TestFixture]
+    [TestClass]
     public class GreekDetectionTestFixture
     {
-        [Test]
+#if !NUNIT
+        public TestContext TestContext { get; set; }
+#endif
+
+        [TestMethod]
         public void TestLatin7Detection()
         {
             RunGreekTest(Encoding.GetEncoding("ISO-8859-7"));
         }
 
-        [Test]
+        [TestMethod]
         public void Win1253Detection()
         {
             RunGreekTest(Encoding.GetEncoding("windows-1253"));
         }
 
-        [Test]
+        [TestMethod]
         public void TestUtf8Detection()
         {
             RunGreekTest(Encoding.UTF8);
@@ -43,7 +53,7 @@ namespace CharDetSharp.UnitTests
 
             float c_grp = p_grp.Confidence;
 
-            using (StreamReader reader = File.OpenText(@"Samples\el.utf-8.txt"))
+            using (StreamReader reader = new StreamReader(this.GetType().Assembly.GetManifestResourceStream(@"CharDetSharp.UnitTests.Samples.el.utf-8.txt")))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)

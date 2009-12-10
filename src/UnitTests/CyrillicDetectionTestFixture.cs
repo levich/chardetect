@@ -2,52 +2,63 @@ using System;
 using System.IO;
 using System.Text;
 
+#if NUNIT
 using NUnit.Framework;
+using TestClassAttribute = NUnit.Framework.TestFixtureAttribute;
+using TestMethodAttribute = NUnit.Framework.TestAttribute;
+#else
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 using CharDetSharp.UniversalCharDet;
+using System.Reflection;
 
 namespace CharDetSharp.UnitTests
 {
-    [TestFixture]
+    [TestClass]
     public class CyrillicDetectionTestFixture
     {
-        [Test]
+#if !NUNIT
+        public TestContext TestContext { get; set; }
+#endif
+        
+        [TestMethod]
         public void TestKoi8RDetection()
         {
             RunCyrillicTest(Encoding.GetEncoding("koi8-r"));
         }
 
-        [Test]
+        [TestMethod]
         public void TestWin1251Detection()
         {
             RunCyrillicTest(Encoding.GetEncoding("windows-1251"));
         }
 
-        [Test]
+        [TestMethod]
         public void TestLatin5Detection()
         {
             RunCyrillicTest(Encoding.GetEncoding("iso-8859-5"));
         }
 
-        [Test]
+        [TestMethod]
         public void TestMacCyrillicDetection()
         {
             RunCyrillicTest(Encoding.GetEncoding("x-mac-cyrillic"));
         }
 
-        [Test]
+        [TestMethod]
         public void TestIbm855Detection()
         {
             RunCyrillicTest(Encoding.GetEncoding("IBM855"));
         }
 
-        [Test]
+        [TestMethod]
         public void TestIbm866Detection()
         {
             RunCyrillicTest(Encoding.GetEncoding("cp866"));
         }
 
-        [Test]
+        [TestMethod]
         public void TestUtf8Detection()
         {
             RunCyrillicTest(Encoding.UTF8);
@@ -75,7 +86,7 @@ namespace CharDetSharp.UnitTests
 
             float c_grp = p_grp.Confidence;
 
-            using (StreamReader reader = File.OpenText(@"Samples\ru.utf-8.txt"))
+            using (StreamReader reader = new StreamReader(this.GetType().Assembly.GetManifestResourceStream(@"CharDetSharp.UnitTests.Samples.ru.utf-8.txt")))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)

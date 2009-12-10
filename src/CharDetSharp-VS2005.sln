@@ -1,15 +1,15 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversalCharDet", "UniversalCharDet\UniversalCharDet.csproj", "{A460ED9D-D0F9-4857-B798-4CBD16A4E0B1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{D0665D3F-26E9-4377-A760-6E7F5D180B75}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0691ABF2-B3C7-43BF-9862-2D8D1299CE58}"
 	ProjectSection(SolutionItems) = preProject
 		..\CharDetSharp.build = ..\CharDetSharp.build
 		..\CharDetSharp.proj = ..\CharDetSharp.proj
 		..\go.bat = ..\go.bat
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversalCharDet", "UniversalCharDet\UniversalCharDet.csproj", "{A460ED9D-D0F9-4857-B798-4CBD16A4E0B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests-NUnit", "UnitTests\UnitTests-NUnit.csproj", "{D0665D3F-26E9-4377-A760-6E7F5D180B75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
