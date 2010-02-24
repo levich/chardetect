@@ -390,7 +390,7 @@ namespace CharDetSharp.UniversalCharDet
             Stream inputStream = input.BaseStream;
 
             if (!inputStream.CanSeek)
-                throw new ArgumentException("input.BaseStream must be able to seek.");
+                throw new ArgumentException(Properties.Resources.StreamMustBeAbleToSeek, "inputStream");
 
             if (typeof(StreamReader).AssemblyQualifiedName == "System.IO.StreamReader, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")
             {
@@ -409,7 +409,7 @@ namespace CharDetSharp.UniversalCharDet
                 return new StreamReader(inputStream, encoding);
             }
 
-            throw new ArithmeticException("unknown type of StreamReader");
+            throw new ArgumentException(Properties.Resources.UnknownTypeOfStreamReader, "inputStream");
         }
 
         [DebuggerStepThrough]

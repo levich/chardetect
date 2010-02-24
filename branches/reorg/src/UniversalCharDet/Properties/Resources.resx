@@ -123,4 +123,10 @@
   <data name="NullBufferExceptionMessage" xml:space="preserve">
     <value>The buffer cannot be null.</value>
   </data>
+  <data name="StreamMustBeAbleToSeek" xml:space="preserve">
+    <value>Stream must be able to seek.</value>
+  </data>
+  <data name="UnknownTypeOfStreamReader" xml:space="preserve">
+    <value>Unknown type of StreamReader</value>
+  </data>
 </root>
