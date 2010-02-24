@@ -77,5 +77,23 @@ namespace CharDetSharp.UniversalCharDet.Properties {
                 return ResourceManager.GetString("NullBufferExceptionMessage", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stream must be able to seek..
+        /// </summary>
+        internal static string StreamMustBeAbleToSeek {
+            get {
+                return ResourceManager.GetString("StreamMustBeAbleToSeek", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown type of StreamReader.
+        /// </summary>
+        internal static string UnknownTypeOfStreamReader {
+            get {
+                return ResourceManager.GetString("UnknownTypeOfStreamReader", resourceCulture);
+            }
+        }
     }
 }
