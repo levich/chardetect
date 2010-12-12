@@ -15,35 +15,35 @@ using CharDetSharp.UniversalCharDet;
 namespace CharDetSharp.UnitTests
 {
     [TestClass]
-    public class GreekDetectionTestFixture : BaseDetectionTestFixure
+    public class HungarianDetectionTestFixture : BaseDetectionTestFixure
     {
 #if !NUNIT
         public TestContext TestContext { get; set; }
 #endif
 
         [TestMethod]
-        public void TestLatin7Detection()
+        public void TestLatin2Detection()
         {
-            RunGreekTest(Encoding.GetEncoding("ISO-8859-7"));
+            RunHungarianTest(Encoding.GetEncoding("ISO-8859-2"));
         }
 
         [TestMethod]
-        public void Win1253Detection()
+        public void Win1250Detection()
         {
-            RunGreekTest(Encoding.GetEncoding("windows-1253"));
+            RunHungarianTest(Encoding.GetEncoding("windows-1250"));
         }
 
         [TestMethod]
         public void TestUtf8Detection()
         {
-            RunGreekTest(Encoding.UTF8);
+            RunHungarianTest(Encoding.UTF8);
         }
 
-        internal void RunGreekTest(Encoding enc)
+        internal void RunHungarianTest(Encoding enc)
         {
-            RunSBCSGroupTest(enc, @"CharDetSharp.UnitTests.Samples.el.utf-8.txt",
-                new Latin7CharSetProber(),
-                new Win1253CharSetProber());
+            RunSBCSGroupTest(enc, @"CharDetSharp.UnitTests.Samples.hu.utf-8.txt",
+                new Latin2CharSetProber(),
+                new Win1250CharSetProber());
         }
     }
 }
