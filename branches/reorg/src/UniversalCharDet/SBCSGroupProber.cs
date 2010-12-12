@@ -49,7 +49,7 @@ namespace CharDetSharp.UniversalCharDet
 {
     public class SBCSGroupProber : ICharSetProber
     {
-        private List<ICharSetProber> probers = new List<ICharSetProber>();
+        private IList<ICharSetProber> probers = new List<ICharSetProber>();
         private bool isActive;
         private ProbingState state;
         private ICharSetProber bestGuess;
@@ -66,10 +66,21 @@ namespace CharDetSharp.UniversalCharDet
 
             this.probers.Add(new Latin7CharSetProber());
             this.probers.Add(new Win1253CharSetProber());
+            this.probers.Add(new Latin5BulgarianCharSetProber());
+            this.probers.Add(new Win1251BulgarianCharSetProber());
+            this.probers.Add(new Latin2CharSetProber());
+            this.probers.Add(new Win1250CharSetProber());
+            this.probers.Add(new TIS620CharSetProber());
+            //this.probers.Add(new HebrewGroupProber());
 
             this.bestGuess = this.probers[0];
             this.activeNum = this.probers.Count;
             this.isActive = true;
+        }
+
+        public ICharSetProber this[int i]
+        {
+            get { return this.probers[i]; }
         }
 
         public string CharSetName
