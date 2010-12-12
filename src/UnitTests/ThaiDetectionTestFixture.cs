@@ -15,7 +15,7 @@ using CharDetSharp.UniversalCharDet;
 namespace CharDetSharp.UnitTests
 {
     [TestClass]
-    public class GreekDetectionTestFixture : BaseDetectionTestFixure
+    public class ThaiDetectionTestFixture : BaseDetectionTestFixure
     {
 #if !NUNIT
         public TestContext TestContext { get; set; }
@@ -24,26 +24,19 @@ namespace CharDetSharp.UnitTests
         [TestMethod]
         public void TestLatin7Detection()
         {
-            RunGreekTest(Encoding.GetEncoding("ISO-8859-7"));
-        }
-
-        [TestMethod]
-        public void Win1253Detection()
-        {
-            RunGreekTest(Encoding.GetEncoding("windows-1253"));
+            RunThaiTest(Encoding.GetEncoding("TIS-620"));
         }
 
         [TestMethod]
         public void TestUtf8Detection()
         {
-            RunGreekTest(Encoding.UTF8);
+            RunThaiTest(Encoding.UTF8);
         }
 
-        internal void RunGreekTest(Encoding enc)
+        internal void RunThaiTest(Encoding enc)
         {
-            RunSBCSGroupTest(enc, @"CharDetSharp.UnitTests.Samples.el.utf-8.txt",
-                new Latin7CharSetProber(),
-                new Win1253CharSetProber());
+            RunSBCSGroupTest(enc, @"CharDetSharp.UnitTests.Samples.th.utf-8.txt",
+                new TIS620CharSetProber());
         }
     }
 }
